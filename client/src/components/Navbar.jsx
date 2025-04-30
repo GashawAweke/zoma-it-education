@@ -3,18 +3,22 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../components/ThemeProvider';
-import Button from './ui/button';
+import { useTheme } from '../context/ThemeContext';
+import { Button } from './ui/button';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+  const { themeName, setTheme } = useTheme();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const toggleTheme = () => {
+    setTheme(themeName === 'dark' ? 'light' : 'dark');
   };
 
   return (
@@ -48,7 +52,7 @@ const Navbar = () => {
               onClick={toggleTheme}
               className='p-2 rounded-md text-muted-foreground hover:text-card-foreground'
             >
-              {theme === 'dark' ? (
+              {themeName === 'dark' ? (
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   className='h-5 w-5'
@@ -75,7 +79,13 @@ const Navbar = () => {
 
             {user ? (
               <>
-                <Link to='/dashboard'>
+                <Link
+                  to={
+                    user.role === 'student'
+                      ? '/dashboard'
+                      : `/${user.role}/dashboard`
+                  }
+                >
                   <Button
                     variant='ghost'
                     className='text-primary hover:text-primary hover:bg-primary/10'
@@ -142,7 +152,7 @@ const Navbar = () => {
               onClick={toggleTheme}
               className='block px-4 py-2 text-base font-medium text-muted-foreground hover:text-card-foreground'
             >
-              {theme === 'dark'
+              {themeName === 'dark'
                 ? 'Switch to Light Mode'
                 : 'Switch to Dark Mode'}
             </button>
@@ -150,7 +160,11 @@ const Navbar = () => {
             {user ? (
               <>
                 <Link
-                  to='/dashboard'
+                  to={
+                    user.role === 'student'
+                      ? '/dashboard'
+                      : `/${user.role}/dashboard`
+                  }
                   className='block px-4 py-2 text-base font-medium text-primary hover:bg-primary/10'
                 >
                   Dashboard

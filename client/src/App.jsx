@@ -8,24 +8,69 @@ import {
 } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Toaster } from 'sonner';
-import { ThemeProvider } from './components/ThemeProvider';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
+import { NotificationProvider } from './context/NotificationContext';
+import { ThemeProvider } from './context/ThemeContext';
+
+// Layouts
+import PortalLayout from './components/PortalLayout';
 
 // Pages
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import CourseView from './pages/CourseView';
-import LessonView from './pages/LessonView';
+
+// Student Portal
+import Dashboard from './pages/student/Dashboard';
+import CourseView from './pages/student/CourseView';
+import LessonView from './pages/student/LessonView';
+import StudentPortfolio from './pages/student/Portfolio';
+import StudentTools from './pages/student/Tools';
+import StudentSettings from './pages/student/Settings';
+
+// Teacher Portal
+import TeacherDashboard from './pages/teacher/TeacherDashboard';
+import TeacherClasses from './pages/teacher/Classes';
+import TeacherAssignments from './pages/teacher/Assignments';
+import TeacherProgress from './pages/teacher/Progress';
+import TeacherCalendar from './pages/teacher/Calendar';
+import TeacherMessages from './pages/teacher/TeacherMessages';
+import TeacherTools from './pages/teacher/Tools';
+import TeacherSettings from './pages/teacher/Settings';
+
+// Parent Portal
+import ParentDashboard from './pages/parent/ParentDashboard';
+import ParentChildren from './pages/parent/Children';
+import ParentReports from './pages/parent/Reports';
+import ParentMessages from './pages/parent/Messages';
+import ParentCalendar from './pages/parent/Calendar';
+import ParentSettings from './pages/parent/Settings';
+
+// Admin Portal
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminUsers from './pages/admin/Users';
+import AdminCourses from './pages/admin/Courses';
+import AdminAnalytics from './pages/admin/Analytics';
+import AdminAnnouncements from './pages/admin/Announcements';
+import AdminSettings from './pages/admin/AdminSettings';
+
+// Health Team Portal
+import HealthDashboard from './pages/health/HealthDashboard';
+import HealthFirstAid from './pages/health/FirstAid';
+import HealthPsychological from './pages/health/Psychological';
+import HealthRecords from './pages/health/Records';
+import HealthResources from './pages/health/Resources';
+import HealthTools from './pages/health/Tools';
+import HealthSettings from './pages/health/Settings';
+
 import NotFound from './pages/NotFound';
 
 // Create a client for React Query
 const queryClient = new QueryClient();
 
 // Protected route component
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
@@ -40,51 +85,196 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to='/login' />;
   }
 
+  if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
+    // Redirect to appropriate dashboard based on role
+    switch (user.role) {
+      case 'student':
+        return <Navigate to='/dashboard' />;
+      case 'teacher':
+        return <Navigate to='/teacher/dashboard' />;
+      case 'parent':
+        return <Navigate to='/parent/dashboard' />;
+      case 'admin':
+        return <Navigate to='/admin/dashboard' />;
+      case 'health':
+        return <Navigate to='/health/dashboard' />;
+      default:
+        return <Navigate to='/login' />;
+    }
+  }
+
   return children;
 };
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme='light'>
-        <ToastProvider>
+      <ToastProvider>
+        <ThemeProvider>
           <AuthProvider>
-            <Router>
-              <Routes>
-                <Route path='/' element={<Landing />} />
-                <Route path='/login' element={<Login />} />
-                <Route path='/register' element={<Register />} />
-                <Route
-                  path='/dashboard'
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path='/course/:gradeId'
-                  element={
-                    <ProtectedRoute>
-                      <CourseView />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path='/lesson/:lessonId'
-                  element={
-                    <ProtectedRoute>
-                      <LessonView />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path='*' element={<NotFound />} />
-              </Routes>
-            </Router>
-            <Toaster position='bottom-right' />
+            <NotificationProvider>
+              <Router>
+                <Routes>
+                  <Route path='/' element={<Landing />} />
+                  <Route path='/login' element={<Login />} />
+                  <Route path='/register' element={<Register />} />
+
+                  {/* Student Portal */}
+                  <Route
+                    element={
+                      <ProtectedRoute allowedRoles={['student']}>
+                        <PortalLayout portalType='student' />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route path='/dashboard' element={<Dashboard />} />
+                    <Route path='/courses' element={<Dashboard />} />
+                    <Route path='/course/:courseId' element={<CourseView />} />
+                    <Route path='/lesson/:lessonId' element={<LessonView />} />
+                    <Route path='/portfolio' element={<StudentPortfolio />} />
+                    <Route
+                      path='/achievements'
+                      element={<Navigate to='/portfolio' replace />}
+                    />
+                    <Route path='/tools' element={<StudentTools />} />
+                    <Route path='/settings' element={<StudentSettings />} />
+                  </Route>
+
+                  {/* Teacher Portal */}
+                  <Route
+                    element={
+                      <ProtectedRoute allowedRoles={['teacher']}>
+                        <PortalLayout portalType='teacher' />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route
+                      path='/teacher/dashboard'
+                      element={<TeacherDashboard />}
+                    />
+                    <Route
+                      path='/teacher/classes'
+                      element={<TeacherClasses />}
+                    />
+                    <Route
+                      path='/teacher/assignments'
+                      element={<TeacherAssignments />}
+                    />
+                    <Route
+                      path='/teacher/progress'
+                      element={<TeacherProgress />}
+                    />
+                    <Route
+                      path='/teacher/calendar'
+                      element={<TeacherCalendar />}
+                    />
+                    <Route
+                      path='/teacher/messages'
+                      element={<TeacherMessages />}
+                    />
+                    <Route path='/teacher/tools' element={<TeacherTools />} />
+                    <Route
+                      path='/teacher/settings'
+                      element={<TeacherSettings />}
+                    />
+                  </Route>
+
+                  {/* Parent Portal */}
+                  <Route
+                    element={
+                      <ProtectedRoute allowedRoles={['parent']}>
+                        <PortalLayout portalType='parent' />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route
+                      path='/parent/dashboard'
+                      element={<ParentDashboard />}
+                    />
+                    <Route
+                      path='/parent/children'
+                      element={<ParentChildren />}
+                    />
+                    <Route path='/parent/reports' element={<ParentReports />} />
+                    <Route
+                      path='/parent/messages'
+                      element={<ParentMessages />}
+                    />
+                    <Route
+                      path='/parent/calendar'
+                      element={<ParentCalendar />}
+                    />
+                    <Route
+                      path='/parent/settings'
+                      element={<ParentSettings />}
+                    />
+                  </Route>
+
+                  {/* Admin Portal */}
+                  <Route
+                    element={
+                      <ProtectedRoute allowedRoles={['admin']}>
+                        <PortalLayout portalType='admin' />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route
+                      path='/admin/dashboard'
+                      element={<AdminDashboard />}
+                    />
+                    <Route path='/admin/users' element={<AdminUsers />} />
+                    <Route path='/admin/courses' element={<AdminCourses />} />
+                    <Route
+                      path='/admin/analytics'
+                      element={<AdminAnalytics />}
+                    />
+                    <Route
+                      path='/admin/announcements'
+                      element={<AdminAnnouncements />}
+                    />
+                    <Route path='/admin/settings' element={<AdminSettings />} />
+                  </Route>
+
+                  {/* Health Team Portal */}
+                  <Route
+                    element={
+                      <ProtectedRoute allowedRoles={['health']}>
+                        <PortalLayout portalType='health' />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route
+                      path='/health/dashboard'
+                      element={<HealthDashboard />}
+                    />
+                    <Route
+                      path='/health/first-aid'
+                      element={<HealthFirstAid />}
+                    />
+                    <Route
+                      path='/health/psychological'
+                      element={<HealthPsychological />}
+                    />
+                    <Route path='/health/records' element={<HealthRecords />} />
+                    <Route
+                      path='/health/resources'
+                      element={<HealthResources />}
+                    />
+                    <Route path='/health/tools' element={<HealthTools />} />
+                    <Route
+                      path='/health/settings'
+                      element={<HealthSettings />}
+                    />
+                  </Route>
+
+                  <Route path='*' element={<NotFound />} />
+                </Routes>
+              </Router>
+              <Toaster position='bottom-right' richColors closeButton />
+            </NotificationProvider>
           </AuthProvider>
-        </ToastProvider>
-      </ThemeProvider>
+        </ThemeProvider>
+      </ToastProvider>
     </QueryClientProvider>
   );
 }
