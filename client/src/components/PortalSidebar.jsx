@@ -46,7 +46,7 @@ const PortalSidebar = ({ portalType }) => {
         setMenuItems([
           { title: 'Dashboard', icon: Home, path: '/dashboard' },
           { title: 'My Courses', icon: BookOpen, path: '/courses' },
-          { title: 'Achievements', icon: BarChart, path: '/achievements' },
+          { title: 'Assessments', icon: FileText, path: '/assessments' },
           { title: 'Portfolio', icon: FileText, path: '/portfolio' },
           { title: 'Tools', icon: Keyboard, path: '/tools' },
           { title: 'Settings', icon: Settings, path: '/settings' },
@@ -57,9 +57,9 @@ const PortalSidebar = ({ portalType }) => {
           { title: 'Dashboard', icon: Home, path: '/teacher/dashboard' },
           { title: 'My Classes', icon: Users, path: '/teacher/classes' },
           {
-            title: 'Assignments',
+            title: 'Assessments',
             icon: FileText,
-            path: '/teacher/assignments',
+            path: '/teacher/assessments',
           },
           {
             title: 'Student Progress',

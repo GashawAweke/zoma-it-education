@@ -55,6 +55,13 @@ export const ThemeProvider = ({ children }) => {
     }
   }, []);
 
+  // Apply theme immediately on first render
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.add(currentTheme);
+    root.setAttribute('data-theme', currentTheme);
+  }, []); // Empty dependency array means this runs once on mount
+
   // Update theme when it changes
   useEffect(() => {
     // Save to localStorage
@@ -62,8 +69,11 @@ export const ThemeProvider = ({ children }) => {
 
     // Update document class
     const root = document.documentElement;
-    root.classList.remove('light-theme', 'dark-theme', 'high-contrast-theme');
-    root.classList.add(`${currentTheme}-theme`);
+    root.classList.remove('light', 'dark', 'high-contrast');
+    root.classList.add(currentTheme);
+
+    // Also update data-theme attribute for components that use it
+    root.setAttribute('data-theme', currentTheme);
 
     // Update meta theme-color for mobile browsers
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');

@@ -28,19 +28,21 @@ import LessonView from './pages/student/LessonView';
 import StudentPortfolio from './pages/student/Portfolio';
 import StudentTools from './pages/student/Tools';
 import StudentSettings from './pages/student/Settings';
+import StudentAssessments from './pages/student/Assessments';
+import AssessmentView from './pages/student/AssessmentView';
 
 // Teacher Portal
-import TeacherDashboard from './pages/teacher/TeacherDashboard';
+import TeacherDashboard from './pages/teacher/Dashboard';
 import TeacherClasses from './pages/teacher/Classes';
-import TeacherAssignments from './pages/teacher/Assignments';
+import TeacherAssessments from './pages/teacher/Assessments';
 import TeacherProgress from './pages/teacher/Progress';
 import TeacherCalendar from './pages/teacher/Calendar';
-import TeacherMessages from './pages/teacher/TeacherMessages';
+import TeacherMessages from './pages/teacher/Messages';
 import TeacherTools from './pages/teacher/Tools';
 import TeacherSettings from './pages/teacher/Settings';
 
 // Parent Portal
-import ParentDashboard from './pages/parent/ParentDashboard';
+import ParentDashboard from './pages/parent/Dashboard';
 import ParentChildren from './pages/parent/Children';
 import ParentReports from './pages/parent/Reports';
 import ParentMessages from './pages/parent/Messages';
@@ -48,15 +50,15 @@ import ParentCalendar from './pages/parent/Calendar';
 import ParentSettings from './pages/parent/Settings';
 
 // Admin Portal
-import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminDashboard from './pages/admin/Dashboard';
 import AdminUsers from './pages/admin/Users';
 import AdminCourses from './pages/admin/Courses';
 import AdminAnalytics from './pages/admin/Analytics';
 import AdminAnnouncements from './pages/admin/Announcements';
-import AdminSettings from './pages/admin/AdminSettings';
+import AdminSettings from './pages/admin/Settings';
 
 // Health Team Portal
-import HealthDashboard from './pages/health/HealthDashboard';
+import HealthDashboard from './pages/health/Dashboard';
 import HealthFirstAid from './pages/health/FirstAid';
 import HealthPsychological from './pages/health/Psychological';
 import HealthRecords from './pages/health/Records';
@@ -113,163 +115,192 @@ function App() {
         <ThemeProvider>
           <AuthProvider>
             <NotificationProvider>
-              <Router>
-                <Routes>
-                  <Route path='/' element={<Landing />} />
-                  <Route path='/login' element={<Login />} />
-                  <Route path='/register' element={<Register />} />
+              <div className='w-full overflow-hidden'>
+                <Router>
+                  <Routes>
+                    <Route path='/' element={<Landing />} />
+                    <Route path='/login' element={<Login />} />
+                    <Route path='/register' element={<Register />} />
 
-                  {/* Student Portal */}
-                  <Route
-                    element={
-                      <ProtectedRoute allowedRoles={['student']}>
-                        <PortalLayout portalType='student' />
-                      </ProtectedRoute>
-                    }
-                  >
-                    <Route path='/dashboard' element={<Dashboard />} />
-                    <Route path='/courses' element={<Dashboard />} />
-                    <Route path='/course/:courseId' element={<CourseView />} />
-                    <Route path='/lesson/:lessonId' element={<LessonView />} />
-                    <Route path='/portfolio' element={<StudentPortfolio />} />
+                    {/* Student Portal */}
                     <Route
-                      path='/achievements'
-                      element={<Navigate to='/portfolio' replace />}
-                    />
-                    <Route path='/tools' element={<StudentTools />} />
-                    <Route path='/settings' element={<StudentSettings />} />
-                  </Route>
+                      element={
+                        <ProtectedRoute allowedRoles={['student']}>
+                          <PortalLayout portalType='student' />
+                        </ProtectedRoute>
+                      }
+                    >
+                      <Route path='/dashboard' element={<Dashboard />} />
+                      <Route path='/courses' element={<Dashboard />} />
+                      <Route
+                        path='/course/:courseId'
+                        element={<CourseView />}
+                      />
+                      <Route
+                        path='/lesson/:lessonId'
+                        element={<LessonView />}
+                      />
+                      <Route path='/portfolio' element={<StudentPortfolio />} />
+                      <Route
+                        path='/achievements'
+                        element={<Navigate to='/portfolio' replace />}
+                      />
+                      <Route path='/tools' element={<StudentTools />} />
+                      <Route path='/settings' element={<StudentSettings />} />
+                      <Route
+                        path='/assessments'
+                        element={<StudentAssessments />}
+                      />
+                      <Route
+                        path='/assessment/:assessmentId'
+                        element={<AssessmentView />}
+                      />
+                      <Route
+                        path='/assessment/:assessmentId/review'
+                        element={<AssessmentView />}
+                      />
+                    </Route>
 
-                  {/* Teacher Portal */}
-                  <Route
-                    element={
-                      <ProtectedRoute allowedRoles={['teacher']}>
-                        <PortalLayout portalType='teacher' />
-                      </ProtectedRoute>
-                    }
-                  >
+                    {/* Teacher Portal */}
                     <Route
-                      path='/teacher/dashboard'
-                      element={<TeacherDashboard />}
-                    />
-                    <Route
-                      path='/teacher/classes'
-                      element={<TeacherClasses />}
-                    />
-                    <Route
-                      path='/teacher/assignments'
-                      element={<TeacherAssignments />}
-                    />
-                    <Route
-                      path='/teacher/progress'
-                      element={<TeacherProgress />}
-                    />
-                    <Route
-                      path='/teacher/calendar'
-                      element={<TeacherCalendar />}
-                    />
-                    <Route
-                      path='/teacher/messages'
-                      element={<TeacherMessages />}
-                    />
-                    <Route path='/teacher/tools' element={<TeacherTools />} />
-                    <Route
-                      path='/teacher/settings'
-                      element={<TeacherSettings />}
-                    />
-                  </Route>
+                      element={
+                        <ProtectedRoute allowedRoles={['teacher']}>
+                          <PortalLayout portalType='teacher' />
+                        </ProtectedRoute>
+                      }
+                    >
+                      <Route
+                        path='/teacher/dashboard'
+                        element={<TeacherDashboard />}
+                      />
+                      <Route
+                        path='/teacher/classes'
+                        element={<TeacherClasses />}
+                      />
+                      <Route
+                        path='/teacher/assessments'
+                        element={<TeacherAssessments />}
+                      />
+                      <Route
+                        path='/teacher/progress'
+                        element={<TeacherProgress />}
+                      />
+                      <Route
+                        path='/teacher/calendar'
+                        element={<TeacherCalendar />}
+                      />
+                      <Route
+                        path='/teacher/messages'
+                        element={<TeacherMessages />}
+                      />
+                      <Route path='/teacher/tools' element={<TeacherTools />} />
+                      <Route
+                        path='/teacher/settings'
+                        element={<TeacherSettings />}
+                      />
+                    </Route>
 
-                  {/* Parent Portal */}
-                  <Route
-                    element={
-                      <ProtectedRoute allowedRoles={['parent']}>
-                        <PortalLayout portalType='parent' />
-                      </ProtectedRoute>
-                    }
-                  >
+                    {/* Parent Portal */}
                     <Route
-                      path='/parent/dashboard'
-                      element={<ParentDashboard />}
-                    />
-                    <Route
-                      path='/parent/children'
-                      element={<ParentChildren />}
-                    />
-                    <Route path='/parent/reports' element={<ParentReports />} />
-                    <Route
-                      path='/parent/messages'
-                      element={<ParentMessages />}
-                    />
-                    <Route
-                      path='/parent/calendar'
-                      element={<ParentCalendar />}
-                    />
-                    <Route
-                      path='/parent/settings'
-                      element={<ParentSettings />}
-                    />
-                  </Route>
+                      element={
+                        <ProtectedRoute allowedRoles={['parent']}>
+                          <PortalLayout portalType='parent' />
+                        </ProtectedRoute>
+                      }
+                    >
+                      <Route
+                        path='/parent/dashboard'
+                        element={<ParentDashboard />}
+                      />
+                      <Route
+                        path='/parent/children'
+                        element={<ParentChildren />}
+                      />
+                      <Route
+                        path='/parent/reports'
+                        element={<ParentReports />}
+                      />
+                      <Route
+                        path='/parent/messages'
+                        element={<ParentMessages />}
+                      />
+                      <Route
+                        path='/parent/calendar'
+                        element={<ParentCalendar />}
+                      />
+                      <Route
+                        path='/parent/settings'
+                        element={<ParentSettings />}
+                      />
+                    </Route>
 
-                  {/* Admin Portal */}
-                  <Route
-                    element={
-                      <ProtectedRoute allowedRoles={['admin']}>
-                        <PortalLayout portalType='admin' />
-                      </ProtectedRoute>
-                    }
-                  >
+                    {/* Admin Portal */}
                     <Route
-                      path='/admin/dashboard'
-                      element={<AdminDashboard />}
-                    />
-                    <Route path='/admin/users' element={<AdminUsers />} />
-                    <Route path='/admin/courses' element={<AdminCourses />} />
-                    <Route
-                      path='/admin/analytics'
-                      element={<AdminAnalytics />}
-                    />
-                    <Route
-                      path='/admin/announcements'
-                      element={<AdminAnnouncements />}
-                    />
-                    <Route path='/admin/settings' element={<AdminSettings />} />
-                  </Route>
+                      element={
+                        <ProtectedRoute allowedRoles={['admin']}>
+                          <PortalLayout portalType='admin' />
+                        </ProtectedRoute>
+                      }
+                    >
+                      <Route
+                        path='/admin/dashboard'
+                        element={<AdminDashboard />}
+                      />
+                      <Route path='/admin/users' element={<AdminUsers />} />
+                      <Route path='/admin/courses' element={<AdminCourses />} />
+                      <Route
+                        path='/admin/analytics'
+                        element={<AdminAnalytics />}
+                      />
+                      <Route
+                        path='/admin/announcements'
+                        element={<AdminAnnouncements />}
+                      />
+                      <Route
+                        path='/admin/settings'
+                        element={<AdminSettings />}
+                      />
+                    </Route>
 
-                  {/* Health Team Portal */}
-                  <Route
-                    element={
-                      <ProtectedRoute allowedRoles={['health']}>
-                        <PortalLayout portalType='health' />
-                      </ProtectedRoute>
-                    }
-                  >
+                    {/* Health Team Portal */}
                     <Route
-                      path='/health/dashboard'
-                      element={<HealthDashboard />}
-                    />
-                    <Route
-                      path='/health/first-aid'
-                      element={<HealthFirstAid />}
-                    />
-                    <Route
-                      path='/health/psychological'
-                      element={<HealthPsychological />}
-                    />
-                    <Route path='/health/records' element={<HealthRecords />} />
-                    <Route
-                      path='/health/resources'
-                      element={<HealthResources />}
-                    />
-                    <Route path='/health/tools' element={<HealthTools />} />
-                    <Route
-                      path='/health/settings'
-                      element={<HealthSettings />}
-                    />
-                  </Route>
+                      element={
+                        <ProtectedRoute allowedRoles={['health']}>
+                          <PortalLayout portalType='health' />
+                        </ProtectedRoute>
+                      }
+                    >
+                      <Route
+                        path='/health/dashboard'
+                        element={<HealthDashboard />}
+                      />
+                      <Route
+                        path='/health/first-aid'
+                        element={<HealthFirstAid />}
+                      />
+                      <Route
+                        path='/health/psychological'
+                        element={<HealthPsychological />}
+                      />
+                      <Route
+                        path='/health/records'
+                        element={<HealthRecords />}
+                      />
+                      <Route
+                        path='/health/resources'
+                        element={<HealthResources />}
+                      />
+                      <Route path='/health/tools' element={<HealthTools />} />
+                      <Route
+                        path='/health/settings'
+                        element={<HealthSettings />}
+                      />
+                    </Route>
 
-                  <Route path='*' element={<NotFound />} />
-                </Routes>
-              </Router>
+                    <Route path='*' element={<NotFound />} />
+                  </Routes>
+                </Router>
+              </div>
               <Toaster position='bottom-right' richColors closeButton />
             </NotificationProvider>
           </AuthProvider>

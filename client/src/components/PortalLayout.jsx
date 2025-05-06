@@ -10,7 +10,7 @@ import { useTheme } from '../context/ThemeContext';
 import NotificationCenter from './NotificationCenter';
 
 const PortalLayout = ({ portalType }) => {
-  const { theme, setTheme } = useTheme();
+  const { themeName, setTheme } = useTheme();
   const [notifications, setNotifications] = useState([
     {
       id: 1,
@@ -73,7 +73,7 @@ const PortalLayout = ({ portalType }) => {
 
   return (
     <SidebarProvider>
-      <div className='flex min-h-screen'>
+      <div className='flex min-h-screen w-full overflow-hidden'>
         <PortalSidebar portalType={portalType} />
         <SidebarInset>
           <header className='sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-6'>
@@ -88,9 +88,12 @@ const PortalLayout = ({ portalType }) => {
               <Button
                 variant='ghost'
                 size='icon'
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                onClick={() =>
+                  setTheme(themeName === 'dark' ? 'light' : 'dark')
+                }
+                aria-label='Toggle theme'
               >
-                {theme === 'dark' ? (
+                {themeName === 'dark' ? (
                   <Sun className='h-5 w-5' />
                 ) : (
                   <Moon className='h-5 w-5' />

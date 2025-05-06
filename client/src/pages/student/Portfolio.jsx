@@ -33,6 +33,8 @@ import {
   Star,
   Award,
   Zap,
+  CheckCircle,
+  Puzzle,
 } from 'lucide-react';
 import { Badge } from '../../components/ui/badge';
 
@@ -317,6 +319,10 @@ const StudentPortfolio = () => {
                 <Trophy className='h-4 w-4 mr-2' />
                 Achievements
               </TabsTrigger>
+              <TabsTrigger value='assessments'>
+                <FileText className='h-4 w-4 mr-2' />
+                Assessments
+              </TabsTrigger>
               <TabsTrigger value='badges'>
                 <Medal className='h-4 w-4 mr-2' />
                 Badges
@@ -427,6 +433,87 @@ const StudentPortfolio = () => {
                         </div>
                       </div>
                     ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Assessments Tab */}
+            <TabsContent value='assessments' className='space-y-4'>
+              <Card>
+                <CardHeader>
+                  <CardTitle>My Assessments</CardTitle>
+                  <CardDescription>
+                    View your completed assessments and results
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className='space-y-4'>
+                    <div className='flex items-center justify-between rounded-lg border p-4 bg-green-50 border-green-200'>
+                      <div className='flex items-center gap-3'>
+                        <div className='h-10 w-10 rounded-full bg-green-100 flex items-center justify-center'>
+                          <CheckCircle className='h-5 w-5 text-green-600' />
+                        </div>
+                        <div>
+                          <p className='font-medium'>
+                            Computer Hardware Exploration
+                          </p>
+                          <p className='text-sm text-muted-foreground'>
+                            Completed on April 15, 2025
+                          </p>
+                        </div>
+                      </div>
+                      <div className='text-right'>
+                        <div className='font-medium text-green-600'>
+                          Excellent
+                        </div>
+                        <p className='text-sm text-muted-foreground'>
+                          Self-directed learning
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className='flex items-center justify-between rounded-lg border p-4'>
+                      <div className='flex items-center gap-3'>
+                        <div className='h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center'>
+                          <FileText className='h-5 w-5 text-blue-600' />
+                        </div>
+                        <div>
+                          <p className='font-medium'>Typing Progress Journal</p>
+                          <p className='text-sm text-muted-foreground'>
+                            Completed on April 10, 2025
+                          </p>
+                        </div>
+                      </div>
+                      <div className='text-right'>
+                        <div className='font-medium'>Very Good</div>
+                        <p className='text-sm text-muted-foreground'>
+                          Progress tracking
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className='flex items-center justify-between rounded-lg border p-4'>
+                      <div className='flex items-center gap-3'>
+                        <div className='h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center'>
+                          <Puzzle className='h-5 w-5 text-purple-600' />
+                        </div>
+                        <div>
+                          <p className='font-medium'>
+                            Programming Concepts Application
+                          </p>
+                          <p className='text-sm text-muted-foreground'>
+                            Completed on March 28, 2025
+                          </p>
+                        </div>
+                      </div>
+                      <div className='text-right'>
+                        <div className='font-medium'>Good</div>
+                        <p className='text-sm text-muted-foreground'>
+                          Hands-on learning
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
