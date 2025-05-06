@@ -41,7 +41,7 @@ const Navbar = () => {
                   />
                 </svg>
                 <span className='ml-2 text-xl font-bold text-card-foreground'>
-                  Zoma School IT
+                  Zoma School
                 </span>
               </Link>
             </div>

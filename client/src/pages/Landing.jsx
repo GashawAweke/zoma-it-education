@@ -11,15 +11,15 @@ const Landing = () => {
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
           <div className='text-center'>
             <h1 className='text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl'>
-              <span className='block'>Zoma IT Hybrid Learning System</span>
+              <span className='block'>Zoma Hybrid Learning System</span>
               <span className='block text-primary'>
-                Empowering Education Through Technology
+                Every child is talented.
               </span>
             </h1>
             <p className='mt-3 max-w-md mx-auto text-base text-muted-foreground sm:text-lg md:mt-5 md:text-xl md:max-w-3xl'>
-              A comprehensive platform designed to bridge the gap between
-              traditional and digital learning, providing students, teachers,
-              parents, and administrators with the tools they need to succeed.
+              Where nature, art, technology and education intertwine to nurture
+              creative, conscious learners who are internationally competent,
+              confident and compassionate.
             </p>
             <div className='mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8'>
               <div className='rounded-md shadow'>
