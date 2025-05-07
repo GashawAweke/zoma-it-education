@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { Button } from './ui/button';
+import favicon from '../assets/zoma.svg';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
