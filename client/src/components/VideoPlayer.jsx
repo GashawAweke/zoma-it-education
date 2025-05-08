@@ -1,8 +1,6 @@
 'use client';
+
 import { useState, useRef, useEffect } from 'react';
-import { Button } from './ui/button';
-import { Slider } from './ui/slider';
-import { Card } from './ui/card';
 import {
   Play,
   Pause,
@@ -13,6 +11,10 @@ import {
   SkipBack,
   Settings,
 } from 'lucide-react';
+import { Button } from './ui/button';
+import { Slider } from './ui/slider';
+import { useToast } from '../context/ToastContext';
+import { Card } from './ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,14 +27,17 @@ import {
 const VideoPlayer = ({
   src,
   poster,
+  onComplete,
+  onError,
+  className = '',
   title,
   autoPlay = false,
   controls = true,
   width = '100%',
   height = 'auto',
   onEnded,
-  className,
 }) => {
+  const { toast } = useToast();
   const videoRef = useRef(null);
   const containerRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(autoPlay);
@@ -40,52 +45,67 @@ const VideoPlayer = ({
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
   const [playbackRate, setPlaybackRate] = useState(1);
   const [quality, setQuality] = useState('auto');
   const controlsTimeoutRef = useRef(null);
 
-  // Initialize video
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Set initial values
-    setDuration(video.duration || 0);
-    setVolume(video.volume);
-    setIsMuted(video.muted);
+    const handleTimeUpdate = () => {
+      setCurrentTime(video.currentTime);
+    };
 
-    // Add event listeners
-    const onTimeUpdate = () => setCurrentTime(video.currentTime);
-    const onDurationChange = () => setDuration(video.duration);
+    const handleLoadedMetadata = () => {
+      setDuration(video.duration);
+      setIsLoading(false);
+    };
+
+    const handleEnded = () => {
+      setIsPlaying(false);
+      if (onComplete) onComplete();
+      if (onEnded) onEnded();
+    };
+
+    const handleError = (e) => {
+      console.error('Video error:', e);
+      setHasError(true);
+      setIsLoading(false);
+      if (onError) onError(e);
+      toast('Error loading video. Please try again later.', 'error');
+    };
+
     const onVolumeChange = () => {
       setVolume(video.volume);
       setIsMuted(video.muted);
     };
+
     const onPlay = () => setIsPlaying(true);
     const onPause = () => setIsPlaying(false);
-    const onEnded = () => {
-      setIsPlaying(false);
-      if (onEnded) onEnded();
-    };
 
-    video.addEventListener('timeupdate', onTimeUpdate);
-    video.addEventListener('durationchange', onDurationChange);
+    video.addEventListener('timeupdate', handleTimeUpdate);
+    video.addEventListener('loadedmetadata', handleLoadedMetadata);
+    video.addEventListener('ended', handleEnded);
+    video.addEventListener('error', handleError);
     video.addEventListener('volumechange', onVolumeChange);
     video.addEventListener('play', onPlay);
     video.addEventListener('pause', onPause);
-    video.addEventListener('ended', onEnded);
 
     return () => {
-      video.removeEventListener('timeupdate', onTimeUpdate);
-      video.removeEventListener('durationchange', onDurationChange);
+      video.removeEventListener('timeupdate', handleTimeUpdate);
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      video.removeEventListener('ended', handleEnded);
+      video.removeEventListener('error', handleError);
       video.removeEventListener('volumechange', onVolumeChange);
       video.removeEventListener('play', onPlay);
       video.removeEventListener('pause', onPause);
-      video.removeEventListener('ended', onEnded);
     };
-  }, [onEnded]);
+  }, [onComplete, onError, toast, onEnded]);
 
   // Auto-hide controls after inactivity
   useEffect(() => {
@@ -133,7 +153,6 @@ const VideoPlayer = ({
     };
   }, [controls, isPlaying]);
 
-  // Handle play/pause
   const togglePlay = () => {
     const video = videoRef.current;
     if (!video) return;
@@ -141,11 +160,14 @@ const VideoPlayer = ({
     if (isPlaying) {
       video.pause();
     } else {
-      video.play();
+      video.play().catch((error) => {
+        console.error('Error playing video:', error);
+        toast('Could not play video. Please try again.', 'error');
+      });
     }
+    setIsPlaying(!isPlaying);
   };
 
-  // Handle seeking
   const handleSeek = (value) => {
     const video = videoRef.current;
     if (!video) return;
@@ -154,34 +176,26 @@ const VideoPlayer = ({
     setCurrentTime(value[0]);
   };
 
-  // Handle volume change
   const handleVolumeChange = (value) => {
     const video = videoRef.current;
     if (!video) return;
 
-    video.volume = value[0];
-    setVolume(value[0]);
-
-    if (value[0] === 0) {
-      video.muted = true;
-      setIsMuted(true);
-    } else if (isMuted) {
-      video.muted = false;
-      setIsMuted(false);
-    }
+    const newVolume = value[0];
+    video.volume = newVolume;
+    setVolume(newVolume);
+    setIsMuted(newVolume === 0);
   };
 
-  // Toggle mute
   const toggleMute = () => {
     const video = videoRef.current;
     if (!video) return;
 
-    video.muted = !video.muted;
-    setIsMuted(video.muted);
+    const newMutedState = !isMuted;
+    video.muted = newMutedState;
+    setIsMuted(newMutedState);
   };
 
-  // Toggle fullscreen
-  const toggleFullscreen = () => {
+  const handleFullscreen = () => {
     const container = containerRef.current;
     if (!container) return;
 
@@ -202,15 +216,24 @@ const VideoPlayer = ({
     }
   };
 
-  // Skip forward/backward
-  const skip = (seconds) => {
+  const formatTime = (timeInSeconds) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
+  const skipForward = () => {
     const video = videoRef.current;
     if (!video) return;
 
-    video.currentTime = Math.max(
-      0,
-      Math.min(video.duration, video.currentTime + seconds)
-    );
+    video.currentTime = Math.min(video.currentTime + 10, video.duration);
+  };
+
+  const skipBackward = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.currentTime = Math.max(video.currentTime - 10, 0);
   };
 
   // Change playback rate
@@ -222,15 +245,9 @@ const VideoPlayer = ({
     setPlaybackRate(rate);
   };
 
-  // Format time (seconds to MM:SS)
-  const formatTime = (timeInSeconds) => {
-    if (isNaN(timeInSeconds)) return '00:00';
-
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = Math.floor(timeInSeconds % 60);
-    return `${minutes.toString().padStart(2, '0')}:${seconds
-      .toString()
-      .padStart(2, '0')}`;
+  // Change quality
+  const changeQuality = (q) => {
+    setQuality(q);
   };
 
   return (
@@ -240,11 +257,26 @@ const VideoPlayer = ({
         className='relative overflow-hidden rounded-lg bg-black'
         style={{ width, height }}
       >
+        {isLoading && (
+          <div className='absolute inset-0 flex items-center justify-center bg-black/50 z-10'>
+            <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-white'></div>
+          </div>
+        )}
+
+        {hasError && (
+          <div className='absolute inset-0 flex flex-col items-center justify-center bg-black/90 z-10 text-white p-4 text-center'>
+            <span className='text-4xl mb-2'>😕</span>
+            <h3 className='text-xl font-bold mb-2'>Video Unavailable</h3>
+            <p>Sorry, we couldn't load this video. Please try again later.</p>
+          </div>
+        )}
+
         <video
           ref={videoRef}
           src={src}
           poster={poster}
           className='w-full h-full'
+          preload='metadata'
           autoPlay={autoPlay}
           playsInline
           onClick={togglePlay}
@@ -256,10 +288,8 @@ const VideoPlayer = ({
               {title && (
                 <div className='text-white font-medium text-sm'>{title}</div>
               )}
-
               <Slider
                 value={[currentTime]}
-                min={0}
                 max={duration || 100}
                 step={0.1}
                 onValueChange={handleSeek}
@@ -284,7 +314,7 @@ const VideoPlayer = ({
                   <Button
                     variant='ghost'
                     size='icon'
-                    onClick={() => skip(-10)}
+                    onClick={skipBackward}
                     className='text-white hover:bg-white/20'
                   >
                     <SkipBack className='h-5 w-5' />
@@ -293,15 +323,15 @@ const VideoPlayer = ({
                   <Button
                     variant='ghost'
                     size='icon'
-                    onClick={() => skip(10)}
+                    onClick={skipForward}
                     className='text-white hover:bg-white/20'
                   >
                     <SkipForward className='h-5 w-5' />
                   </Button>
 
-                  <div className='text-white text-xs'>
+                  <span className='text-white text-sm'>
                     {formatTime(currentTime)} / {formatTime(duration)}
-                  </div>
+                  </span>
                 </div>
 
                 <div className='flex items-center gap-2'>
@@ -312,7 +342,7 @@ const VideoPlayer = ({
                       onClick={toggleMute}
                       className='text-white hover:bg-white/20'
                     >
-                      {isMuted || volume === 0 ? (
+                      {isMuted ? (
                         <VolumeX className='h-5 w-5' />
                       ) : (
                         <Volume2 className='h-5 w-5' />
@@ -320,7 +350,6 @@ const VideoPlayer = ({
                     </Button>
                     <Slider
                       value={[isMuted ? 0 : volume]}
-                      min={0}
                       max={1}
                       step={0.01}
                       onValueChange={handleVolumeChange}
@@ -356,7 +385,7 @@ const VideoPlayer = ({
                       {['auto', '1080p', '720p', '480p', '360p'].map((q) => (
                         <DropdownMenuItem
                           key={q}
-                          onClick={() => setQuality(q)}
+                          onClick={() => changeQuality(q)}
                           className={quality === q ? 'bg-accent' : ''}
                         >
                           {q}
@@ -368,7 +397,7 @@ const VideoPlayer = ({
                   <Button
                     variant='ghost'
                     size='icon'
-                    onClick={toggleFullscreen}
+                    onClick={handleFullscreen}
                     className='text-white hover:bg-white/20'
                   >
                     <Maximize className='h-5 w-5' />

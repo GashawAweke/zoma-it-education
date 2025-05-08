@@ -20,6 +20,7 @@ import PortalLayout from './components/PortalLayout';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Library from './pages/library/Library';
 
 // Student Portal
 import Dashboard from './pages/student/Dashboard';
@@ -159,6 +160,10 @@ function App() {
                         path='/assessment/:assessmentId/review'
                         element={<AssessmentView />}
                       />
+                      <Route
+                        path='/library'
+                        element={<Library userType='student' />}
+                      />
                     </Route>
 
                     {/* Teacher Portal */}
@@ -197,6 +202,10 @@ function App() {
                       <Route
                         path='/teacher/settings'
                         element={<TeacherSettings />}
+                      />
+                      <Route
+                        path='/teacher/library'
+                        element={<Library userType='teacher' />}
                       />
                     </Route>
 
@@ -294,6 +303,10 @@ function App() {
                       <Route
                         path='/health/settings'
                         element={<HealthSettings />}
+                      />
+                      <Route
+                        path='/health/library'
+                        element={<Library userType='health' />}
                       />
                     </Route>
 

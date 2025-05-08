@@ -32,6 +32,7 @@ import {
   LogOut,
   Home,
   Keyboard,
+  Library,
 } from 'lucide-react';
 
 const PortalSidebar = ({ portalType }) => {
@@ -46,6 +47,7 @@ const PortalSidebar = ({ portalType }) => {
         setMenuItems([
           { title: 'Dashboard', icon: Home, path: '/dashboard' },
           { title: 'My Courses', icon: BookOpen, path: '/courses' },
+          { title: 'Library', icon: Library, path: '/library' },
           { title: 'Assessments', icon: FileText, path: '/assessments' },
           { title: 'Portfolio', icon: FileText, path: '/portfolio' },
           { title: 'Tools', icon: Keyboard, path: '/tools' },
@@ -56,6 +58,7 @@ const PortalSidebar = ({ portalType }) => {
         setMenuItems([
           { title: 'Dashboard', icon: Home, path: '/teacher/dashboard' },
           { title: 'My Classes', icon: Users, path: '/teacher/classes' },
+          { title: 'Library', icon: Library, path: '/teacher/library' },
           {
             title: 'Assessments',
             icon: FileText,
@@ -105,6 +108,7 @@ const PortalSidebar = ({ portalType }) => {
             icon: Brain,
             path: '/health/psychological',
           },
+          { title: 'Library', icon: Library, path: '/health/library' },
           { title: 'Student Records', icon: FileText, path: '/health/records' },
           { title: 'Resources', icon: BookOpen, path: '/health/resources' },
           { title: 'Tools', icon: Keyboard, path: '/health/tools' },
