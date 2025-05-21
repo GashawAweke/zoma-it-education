@@ -71,7 +71,7 @@ const Dashboard = () => {
       setIsLoading(true);
       try {
         // Fetch the data from /data/videodata.json
-        const response = await fetch('localvideodata.json');
+        const response = await fetch('videodata.json');
         if (!response.ok) {
           throw new Error(
             `Failed to fetch data: ${response.status} ${response.statusText}`
