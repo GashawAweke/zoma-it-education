@@ -24,6 +24,7 @@ import Library from './pages/library/Library';
 
 // Student Portal
 import Dashboard from './pages/student/Dashboard';
+import DashboardBak from './pages/student/DashboardBak';
 import CourseView from './pages/student/CourseView';
 import LessonView from './pages/student/LessonView';
 import StudentPortfolio from './pages/student/Portfolio';
@@ -132,7 +133,7 @@ function App() {
                       }
                     >
                       <Route path='/dashboard' element={<Dashboard />} />
-                      <Route path='/courses' element={<Dashboard />} />
+                      <Route path='/courses' element={<DashboardBak />} />
                       <Route
                         path='/course/:courseId'
                         element={<CourseView />}
