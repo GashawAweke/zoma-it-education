@@ -38,6 +38,12 @@ import {
   X,
 } from 'lucide-react';
 import VideoPlayer from '../../components/VideoPlayer';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '../../components/ui/accordion';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -54,9 +60,9 @@ const Dashboard = () => {
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [recentlyWatched, setRecentlyWatched] = useState([]);
-  const [recommendedVideos, setRecommendedVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [courseVideos, setCourseVideos] = useState([]);
+  const [expandedCategory, setExpandedCategory] = useState(null);
   const playerRef = useRef(null);
 
   // Load course data
@@ -64,8 +70,8 @@ const Dashboard = () => {
     const loadData = async () => {
       setIsLoading(true);
       try {
-        // Fetch the data from videodata.json
-        const response = await fetch('videodata.json');
+        // Fetch the data from /data/videodata.json
+        const response = await fetch('localvideodata.json');
         if (!response.ok) {
           throw new Error(
             `Failed to fetch data: ${response.status} ${response.statusText}`
@@ -74,17 +80,10 @@ const Dashboard = () => {
         const data = await response.json();
         setCourseVideos(data);
 
-        // Generate recommended videos (in a real app, this would be based on user behavior)
-        const allVideos = data.flatMap((category) =>
-          category.videos.map((video) => ({
-            ...video,
-            category: category.category,
-          }))
-        );
-        const randomVideos = [...allVideos]
-          .sort(() => 0.5 - Math.random())
-          .slice(0, 4);
-        setRecommendedVideos(randomVideos);
+        // Set the first category as expanded by default
+        if (data.length > 0) {
+          setExpandedCategory(data[0].category);
+        }
 
         // Initialize progress data
         const progressData = {};
@@ -97,6 +96,12 @@ const Dashboard = () => {
         setCourseProgress(progressData);
 
         // Simulate loading recently watched videos
+        const allVideos = data.flatMap((category) =>
+          category.videos.map((video) => ({
+            ...video,
+            category: category.category,
+          }))
+        );
         if (allVideos.length > 0) {
           setRecentlyWatched([
             allVideos[0],
@@ -530,80 +535,80 @@ const Dashboard = () => {
                 </div>
               )}
 
-              {/* Recommended Videos */}
-              {recommendedVideos.length > 0 && (
-                <div>
-                  <h2 className='text-xl font-bold mb-4'>
-                    Recommended for You
-                  </h2>
-                  <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-                    {recommendedVideos.map((video, index) => (
-                      <VideoCard
-                        key={index}
-                        video={video}
-                        category={video.category}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Course Categories */}
+              {/* Course Categories with Accordion */}
               {filteredVideos.length > 0 ? (
-                <div className='space-y-8'>
-                  {filteredVideos.map((category, index) => (
-                    <div key={index}>
-                      <div className='flex items-center justify-between mb-4'>
-                        <h2 className='text-xl font-bold'>
-                          {category.category}
-                        </h2>
-                        <div className='flex items-center'>
-                          <span className='text-sm mr-2'>
-                            {courseProgress[category.category]?.completed || 0}/
-                            {courseProgress[category.category]?.total || 0}{' '}
-                            completed
-                          </span>
-                          <Progress
-                            value={
-                              courseProgress[category.category]
-                                ? (courseProgress[category.category].completed /
-                                    courseProgress[category.category].total) *
-                                  100
-                                : 0
-                            }
-                            className='w-24 h-2'
-                          />
-                        </div>
-                      </div>
-
-                      {viewMode === 'grid' ? (
-                        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
-                          {category.videos.map((video, videoIndex) => (
-                            <VideoCard
-                              key={videoIndex}
-                              video={video}
-                              category={category.category}
-                            />
-                          ))}
-                        </div>
-                      ) : (
-                        <Card>
-                          <CardContent className='p-0'>
-                            <div className='divide-y'>
+                <div className='space-y-4'>
+                  <Accordion
+                    type='single'
+                    collapsible
+                    value={expandedCategory}
+                    onValueChange={setExpandedCategory}
+                    className='space-y-4'
+                  >
+                    {filteredVideos.map((category, index) => (
+                      <AccordionItem
+                        key={index}
+                        value={category.category}
+                        className='border rounded-lg overflow-hidden'
+                      >
+                        <AccordionTrigger className='px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-800'>
+                          <div className='flex items-center justify-between w-full pr-4'>
+                            <h2 className='text-xl font-bold'>
+                              {category.category}
+                            </h2>
+                            <div className='flex items-center'>
+                              <span className='text-sm mr-2'>
+                                {courseProgress[category.category]?.completed ||
+                                  0}
+                                /{courseProgress[category.category]?.total || 0}{' '}
+                                completed
+                              </span>
+                              <Progress
+                                value={
+                                  courseProgress[category.category]
+                                    ? (courseProgress[category.category]
+                                        .completed /
+                                        courseProgress[category.category]
+                                          .total) *
+                                      100
+                                    : 0
+                                }
+                                className='w-24 h-2'
+                              />
+                            </div>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent className='px-6 pb-6'>
+                          {viewMode === 'grid' ? (
+                            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
                               {category.videos.map((video, videoIndex) => (
                                 <VideoCard
                                   key={videoIndex}
                                   video={video}
                                   category={category.category}
-                                  layout='list'
                                 />
                               ))}
                             </div>
-                          </CardContent>
-                        </Card>
-                      )}
-                    </div>
-                  ))}
+                          ) : (
+                            <Card>
+                              <CardContent className='p-0'>
+                                <div className='divide-y'>
+                                  {category.videos.map((video, videoIndex) => (
+                                    <VideoCard
+                                      key={videoIndex}
+                                      video={video}
+                                      category={category.category}
+                                      layout='list'
+                                    />
+                                  ))}
+                                </div>
+                              </CardContent>
+                            </Card>
+                          )}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
                 </div>
               ) : (
                 <div className='text-center py-12'>
@@ -1001,18 +1006,10 @@ const Dashboard = () => {
         </Tabs>
       </main>
 
-      {/* Video Player Modal */}
+      {/* Video Player Modal - Fixed to address the layout issues */}
       {isPlayerOpen && selectedVideo && (
-        <div
-          className={`fixed inset-0 z-50 bg-black ${
-            isFullscreen ? '' : 'p-4 md:p-6'
-          } flex items-center justify-center`}
-        >
-          <div
-            className={`relative ${
-              isFullscreen ? 'w-full h-full' : 'w-full max-w-5xl'
-            }`}
-          >
+        <div className='fixed inset-0 z-50 bg-background flex items-center justify-center overflow-y-auto'>
+          <div className='w-full max-w-5xl mx-auto my-8 relative'>
             <div className='absolute top-4 right-4 z-10 flex space-x-2'>
               <Button
                 variant='ghost'
@@ -1024,7 +1021,7 @@ const Dashboard = () => {
               </Button>
             </div>
 
-            <div className='bg-background rounded-lg overflow-hidden'>
+            <div className='bg-background rounded-lg overflow-hidden shadow-xl'>
               <VideoPlayer
                 ref={playerRef}
                 src={selectedVideo.url}

@@ -75,7 +75,7 @@ const Sidebar = () => {
           },
           {
             path: '/teacher/courses',
-            label: 'My Courses',
+            label: 'My Classes',
             icon: <BookOpen size={20} />,
           },
           {

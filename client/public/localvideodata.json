@@ -31,6 +31,60 @@
         "url": "/videos/filemanager/05-search-box.mp4",
         "review": "Utilize the search box effectively.",
         "duration": "00:10"
+      },
+      {
+        "name": "Default Folders Overview",
+        "url": "/videos/filemanager/06-default-folders.mp4",
+        "review": "Get to know the default folders in File Explorer.",
+        "duration": "00:15"
+      },
+      {
+        "name": "View Button Options",
+        "url": "/videos/filemanager/07-view-button.mp4",
+        "review": "Learn how to change folder views using the View button.",
+        "duration": "00:33"
+      },
+      {
+        "name": "Copy and Paste Files",
+        "url": "/videos/filemanager/08-copy-paste.mp4",
+        "review": "Learn how to copy and paste files and folders.",
+        "duration": "00:34"
+      },
+      {
+        "name": "Cut and Paste Files",
+        "url": "/videos/filemanager/09-cut-paste.mp4",
+        "review": "Understand how to move files using cut and paste.",
+        "duration": "00:28"
+      },
+      {
+        "name": "Rename Files or Folders",
+        "url": "/videos/filemanager/10-rename.mp4",
+        "review": "Learn how to rename files and folders properly.",
+        "duration": "00:22"
+      },
+      {
+        "name": "Delete Files or Folders",
+        "url": "/videos/filemanager/11-delete.mp4",
+        "review": "Discover how to delete files and folders safely.",
+        "duration": "00:26"
+      },
+      {
+        "name": "Creating Shortcuts",
+        "url": "/videos/filemanager/12-creating-shortcut.mp4",
+        "review": "Step-by-step on creating desktop or folder shortcuts.",
+        "duration": "00:27"
+      },
+      {
+        "name": "Keyboard Shortcuts in File Explorer",
+        "url": "/videos/filemanager/13-keyboard-shortcuts.mp4",
+        "review": "Master productivity with essential File Explorer shortcuts.",
+        "duration": "00:41"
+      },
+      {
+        "name": "Unethical File Operations",
+        "url": "/videos/filemanager/13-unethical.mp4",
+        "review": "Brief explanation of unethical file practices to avoid.",
+        "duration": "00:10"
       }
     ]
   },

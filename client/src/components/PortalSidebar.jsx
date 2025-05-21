@@ -46,7 +46,7 @@ const PortalSidebar = ({ portalType }) => {
       case 'student':
         setMenuItems([
           { title: 'Dashboard', icon: Home, path: '/dashboard' },
-          { title: 'My Courses', icon: BookOpen, path: '/courses' },
+          { title: 'My Classes', icon: BookOpen, path: '/courses' },
           { title: 'Library', icon: Library, path: '/library' },
           { title: 'Assessments', icon: FileText, path: '/assessments' },
           { title: 'Portfolio', icon: FileText, path: '/portfolio' },
