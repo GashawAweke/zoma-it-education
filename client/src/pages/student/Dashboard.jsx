@@ -29,60 +29,60 @@ import {
 import axios from 'axios';
 import VideoPlayer from '../../components/VideoPlayer';
 
-// Mock function to load course data - will be replaced with real API fetch
-const loadCourseData = async (gradeLevel) => {
-  // TODO: Real API fetch will go here
-  try {
-    // For now, we're using static imports based on grade level
-    if (gradeLevel === '3-4') {
-      // In a real implementation, this would be a fetch call to an API endpoint
-      const data = await import('../../data/grade-3-4-videodata.json');
-      const courseData = data.default || data;
+// // Mock function to load course data - will be replaced with real API fetch
+// const loadCourseData = async (gradeLevel) => {
+//   // TODO: Real API fetch will go here
+//   try {
+//     // For now, we're using static imports based on grade level
+//     if (gradeLevel === '3-4') {
+//       // In a real implementation, this would be a fetch call to an API endpoint
+//       const data = await import('../../data/grade-3-4-videodata.json');
+//       const courseData = data.default || data;
 
-      // Process the data to ensure file paths are correct
-      return courseData.map((chapter) => {
-        if (chapter.sections) {
-          return {
-            ...chapter,
-            sections: chapter.sections.map((section) => {
-              return {
-                ...section,
-                videos: section.videos.map((video) => {
-                  // Ensure the file path is correct
-                  return {
-                    ...video,
-                    file: video.file.startsWith('/')
-                      ? video.file
-                      : `/assets/${video.file}`,
-                  };
-                }),
-              };
-            }),
-          };
-        } else if (chapter.videos) {
-          return {
-            ...chapter,
-            videos: chapter.videos.map((video) => {
-              // Ensure the file path is correct
-              return {
-                ...video,
-                file: video.file.startsWith('/')
-                  ? video.file
-                  : `/assets/${video.file}`,
-              };
-            }),
-          };
-        }
-        return chapter;
-      });
-    }
-    // Add other grade levels as needed
-    return [];
-  } catch (error) {
-    console.error('Error loading course data:', error);
-    return [];
-  }
-};
+//       // Process the data to ensure file paths are correct
+//       return courseData.map((chapter) => {
+//         if (chapter.sections) {
+//           return {
+//             ...chapter,
+//             sections: chapter.sections.map((section) => {
+//               return {
+//                 ...section,
+//                 videos: section.videos.map((video) => {
+//                   // Ensure the file path is correct
+//                   return {
+//                     ...video,
+//                     file: video.file.startsWith('/')
+//                       ? video.file
+//                       : `/assets/${video.file}`,
+//                   };
+//                 }),
+//               };
+//             }),
+//           };
+//         } else if (chapter.videos) {
+//           return {
+//             ...chapter,
+//             videos: chapter.videos.map((video) => {
+//               // Ensure the file path is correct
+//               return {
+//                 ...video,
+//                 file: video.file.startsWith('/')
+//                   ? video.file
+//                   : `/assets/${video.file}`,
+//               };
+//             }),
+//           };
+//         }
+//         return chapter;
+//       });
+//     }
+//     // Add other grade levels as needed
+//     return [];
+//   } catch (error) {
+//     console.error('Error loading course data:', error);
+//     return [];
+//   }
+// };
 
 const fetchGradeCourses = async (gradeLevel) => {
   // TODO: Real API fetch will go here
